@@ -17,7 +17,7 @@ local-setup: pre-requirements ## Set up the local environment (e.g. install git 
 install: pre-requirements ## Install the app packages
 	uv python install 3.12.8
 	uv python pin 3.12.8
-	uv sync --no-install-project
+	uv sync
 
 .PHONY: update
 update: pre-requirements ## Update the app packages
@@ -63,17 +63,8 @@ format: pre-requirements  ## Format python code
 checks: pre-requirements check-lint check-format check-typing  ## Run all checks
 
 .PHONY: test
-test: pre-requirements ## Run all the tests
-	 PYTHONPATH=. pytest tests -ra -x --durations=5
-
-.PHONY: watch
-watch: pre-requirements ## Run all the tests in watch mode
-	 PYTHONPATH=. ptw --runner "pytest tests -ra -x --durations=5"
+test:  ## Run tests
+	uv run pytest tests -x -ra
 
 .PHONY: pre-commit
-pre-commit: pre-requirements check-format check-typing check-lint test
-	
-.PHONY: rename-project
-rename-project: ## Rename project make rename name=new-name
-	sed -i 's/python-boilerplate/$(name)/' Makefile
-	sed -i 's/python-boilerplate/$(name)/' pyproject.toml
+pre-commit: checks test
