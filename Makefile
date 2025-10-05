@@ -37,7 +37,7 @@ remove-package: pre-requirements ## Removes a package from the app. ex: make rem
 
 .PHONY: run
 run: pre-requirements ## Run the app
-	python main.py
+	uv run fastapi run --reload
 
 .PHONY: check-typing
 check-typing: pre-requirements  ## Run a static analyzer over the code to find issues

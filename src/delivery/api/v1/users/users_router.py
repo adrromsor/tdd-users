@@ -22,5 +22,5 @@ def create_user(
     request: UserCreateRequest,
     handler: CreateUserCommandHandler = Depends(get_create_user_command_handler),
 ) -> None:
-    command = CreateUserCommand(name=request.name, age=request.age)
+    command = CreateUserCommand(id=request.id, name=request.name, age=request.age)
     handler.execute(command)

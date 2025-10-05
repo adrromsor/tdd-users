@@ -7,3 +7,7 @@ class UserRepository(ABC):
     @abstractmethod
     def save(self, user: User) -> None:
         raise NotImplementedError
+
+    @abstractmethod
+    def find(self, user_id: str) -> User | None:
+        raise NotImplementedError

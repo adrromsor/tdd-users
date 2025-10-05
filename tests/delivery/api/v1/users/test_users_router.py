@@ -15,8 +15,8 @@ from src.delivery.api.v1.users.users_router import get_create_user_command_handl
 
 class TestUserRouter:
     def test_create_user(self) -> None:
-        payload = {"name": "Mike", "age": 27}
-        command = CreateUserCommand(name=payload["name"], age=payload["age"])
+        payload = {"id": "123", "name": "Mike", "age": 27}
+        command = CreateUserCommand(id=payload["id"], name=payload["name"], age=payload["age"])
         client = TestClient(app)
         handler = Mimic(Spy, CreateUserCommandHandler)
 

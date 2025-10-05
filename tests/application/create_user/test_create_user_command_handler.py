@@ -12,11 +12,11 @@ from src.infrastructure.in_memory_user_repository import InMemoryUserRepository
 
 class TestCreateUserCommandHandler:
     def test_create_user_command_handler_saves_user(self) -> None:
-        command = CreateUserCommand(name="Mike", age=27)
+        command = CreateUserCommand(id="123", name="Mike", age=27)
         repository = Mimic(Spy, InMemoryUserRepository)
         handler = CreateUserCommandHandler(repository)
 
         handler.execute(command)
 
-        expected_user = User(name="Mike", age=27)
+        expected_user = User(id="123", name="Mike", age=27)
         expect(repository.save).to(have_been_called_with(expected_user))
