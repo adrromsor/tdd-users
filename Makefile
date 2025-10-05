@@ -41,23 +41,23 @@ run: pre-requirements ## Run the app
 
 .PHONY: check-typing
 check-typing: pre-requirements  ## Run a static analyzer over the code to find issues
-	ty check .
+	uv run ty check .
 
 .PHONY: check-lint
 check-lint: pre-requirements ## Check the code style
-	ruff check
+	uv run ruff check
 
 .PHONY: lint
 lint: pre-requirements ## Lint the code format
-	ruff check --fix
+	uv run ruff check --fix
 
 .PHONY: check-format
 check-format: pre-requirements  ## Check format python code
-	ruff format --check
+	uv run ruff format --check
 
 .PHONY: format
 format: pre-requirements  ## Format python code
-	ruff format
+	uv run ruff format
 
 .PHONY: checks
 checks: pre-requirements check-lint check-format check-typing  ## Run all checks
