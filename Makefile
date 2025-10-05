@@ -17,7 +17,7 @@ local-setup: pre-requirements ## Set up the local environment (e.g. install git 
 install: pre-requirements ## Install the app packages
 	uv python install 3.12.8
 	uv python pin 3.12.8
-	uv sync
+	uv sync --no-install-project
 
 .PHONY: update
 update: pre-requirements ## Update the app packages
@@ -41,30 +41,30 @@ run: pre-requirements ## Run the app
 
 .PHONY: check-typing
 check-typing: pre-requirements  ## Run a static analyzer over the code to find issues
-	uv run ty check .
+	ty check .
 
 .PHONY: check-lint
 check-lint: pre-requirements ## Check the code style
-	uv run ruff check
+	ruff check
 
 .PHONY: lint
 lint: pre-requirements ## Lint the code format
-	uv run ruff check --fix
+	ruff check --fix
 
 .PHONY: check-format
 check-format: pre-requirements  ## Check format python code
-	uv run ruff format --check
+	ruff format --check
 
 .PHONY: format
 format: pre-requirements  ## Format python code
-	uv run ruff format
+	ruff format
 
 .PHONY: checks
 checks: pre-requirements check-lint check-format check-typing  ## Run all checks
 
 .PHONY: test
-test:  ## Run tests
-	uv run pytest tests -x -ra
+test: pre-requirements ## Run all the tests
+	 PYTHONPATH=. pytest tests -ra -x --durations=5
 
 .PHONY: pre-commit
 pre-commit: checks test

@@ -1,4 +1,5 @@
 from http.client import CREATED
+
 from fastapi import APIRouter, Depends
 
 from src.application.create_user.create_user_command import CreateUserCommand
