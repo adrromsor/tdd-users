@@ -6,12 +6,14 @@ from src.application.create_user.create_user_command_handler import (
     CreateUserCommandHandler,
 )
 from src.delivery.api.v1.users.users_requests import UserCreateRequest
+from src.infrastructure.in_memory_user_repository import InMemoryUserRepository
 
 users_router = APIRouter()
+user_repository = InMemoryUserRepository()
 
 
 def get_create_user_command_handler() -> CreateUserCommandHandler:
-    return CreateUserCommandHandler()
+    return CreateUserCommandHandler(user_repository)
 
 
 @users_router.post("/users", status_code=CREATED)
