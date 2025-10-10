@@ -1,5 +1,3 @@
-from expects import equal, expect
-
 from src.domain.user import User
 from src.infrastructure.in_memory_user_repository import InMemoryUserRepository
 
@@ -12,4 +10,4 @@ class TestInMemoryUserRepository:
         repository.save(user)
 
         retrieved = repository.find("123")
-        expect(retrieved).to(equal(user))
+        assert retrieved == user
