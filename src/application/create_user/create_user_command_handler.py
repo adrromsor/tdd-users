@@ -8,5 +8,5 @@ class CreateUserCommandHandler:
         self._repository = repository
 
     def execute(self, command: CreateUserCommand) -> None:
-        user = User(id=command.id, name=command.name, age=command.age)
+        user = User.create(id=command.id, name=command.name, age=command.age)
         self._repository.save(user)

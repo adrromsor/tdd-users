@@ -13,7 +13,7 @@ from src.delivery.api.v1.users.users_router import get_create_user_command_handl
 
 class TestUserRouter:
     def test_create_user(self) -> None:
-        payload = {"id": "123", "name": "Mike", "age": 27}
+        payload = {"id": "4a079c0b-5474-4648-a836-8cc7c4e4ff3d", "name": "Mike", "age": 27}
         command = CreateUserCommand(id=payload["id"], name=payload["name"], age=payload["age"])
         client = TestClient(app)
 
