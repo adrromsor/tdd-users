@@ -17,6 +17,13 @@ class User:
     def from_primitives(cls, id: str, name: str, age: int) -> Self:
         return cls(id=UUID(id), name=name, age=age)
 
+    def to_primitives(self) -> "UserPrimitives":
+        return UserPrimitives(
+            id=str(self.id),
+            name=self.name,
+            age=self.age,
+        )
+
 
 class UserPrimitives(TypedDict):
     id: str

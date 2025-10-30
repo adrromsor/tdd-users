@@ -11,3 +11,7 @@ class UserRepository(ABC):
     @abstractmethod
     def find(self, user_id: str) -> User | None:
         raise NotImplementedError
+
+    @abstractmethod
+    def search(self) -> list[User]:
+        raise NotImplementedError

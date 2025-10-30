@@ -1,15 +1,24 @@
 from uuid import UUID
 
-from src.domain.user import User
+from src.domain.user import User, UserPrimitives
 from src.domain.user_repository import UserRepository
 
 
 class InMemoryUserRepository(UserRepository):
     def __init__(self):
-        self._storage: dict[str, User] = {}
+        self._storage: dict[str, UserPrimitives] = {}
 
     def save(self, user: User) -> None:
-        self._storage[user.id] = user
+        self._storage[str(user.id)] = user.to_primitives()
 
     def find(self, user_id: UUID) -> User | None:
-        return self._storage.get(user_id)
+        user_primitives = self._storage.get(str(user_id))
+        if user_primitives is None:
+            return None
+        return User.from_primitives(user_primitives["id"], user_primitives["name"], user_primitives["age"])
+
+    def search(self) -> list[User]:
+        return [
+            User.from_primitives(user_primitives["id"], user_primitives["name"], user_primitives["age"])
+            for user_primitives in self._storage.values()
+        ]
