@@ -23,12 +23,13 @@ def get_search_users_query_handler() -> SearchUsersQueryHandler:
     return SearchUsersQueryHandler(user_repository)
 
 
-@users_router.put("/users", status_code=CREATED)
+@users_router.put("/users/{user_id}", status_code=CREATED)
 def create_user(
+    user_id: str,
     request: UserCreateRequest,
     handler: CreateUserCommandHandler = Depends(get_create_user_command_handler),
 ) -> None:
-    command = CreateUserCommand(id=request.id, name=request.name, age=request.age)
+    command = CreateUserCommand(id=user_id, name=request.name, age=request.age)
     handler.execute(command)
 
 
