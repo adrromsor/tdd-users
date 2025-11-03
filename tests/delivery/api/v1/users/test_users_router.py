@@ -1,3 +1,4 @@
+import uuid
 from http.client import CREATED, OK
 from unittest.mock import Mock
 
@@ -25,7 +26,7 @@ class TestUserRouter:
         self._client = TestClient(app)
 
     def test_create_user(self) -> None:
-        user_id = "4a079c0b-5474-4648-a836-8cc7c4e4ff3d"
+        user_id = str(uuid.uuid4())
         payload = {"name": "Mike", "age": 27}
         command = CreateUserCommand(id=user_id, name=payload["name"], age=payload["age"])
 

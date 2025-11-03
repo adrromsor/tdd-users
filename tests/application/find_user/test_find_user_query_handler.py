@@ -24,6 +24,8 @@ class TestFindUserQueryHandler:
         query = FindUserQuery(id=user_primitives["id"])
 
         response: FindUserQueryResponse = handler.execute(query)
+
+        repository.find.assert_called_once_with(user_id=user_primitives["id"])
         assert response == FindUserQueryResponse(
             id=user_primitives["id"],
             name=user_primitives["name"],
