@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 from src.application.search_users.search_users_query_handler import SearchUsersQueryHandler
 from src.application.search_users.search_users_query_response import SearchUsersQueryResponse
 from src.domain.user import User
@@ -7,18 +9,22 @@ from tests.domain.user_primitives_mother import UserPrimitivesMother
 
 class TestSearchUsersQueryHandler:
     def test_search_users_query_handler_returns_all_users(self) -> None:
-        repository = InMemoryUserRepository()
         users_primitives = [UserPrimitivesMother.any(), UserPrimitivesMother.any()]
-
-        for user_primitive in users_primitives:
-            user = User.from_primitives(
-                id=user_primitive["id"],
-                name=user_primitive["name"],
-                age=user_primitive["age"],
+        users = [
+            User.from_primitives(
+                id=user_primitives["id"],
+                name=user_primitives["name"],
+                age=user_primitives["age"],
             )
-            repository.save(user)
+            for user_primitives in users_primitives
+        ]
+
+        repository = Mock(spec=InMemoryUserRepository)
+        repository.search.return_value = users
 
         handler = SearchUsersQueryHandler(repository)
 
-        response: SearchUsersQueryResponse = handler.execute()
-        assert response.users == users_primitives
+        response = handler.execute()
+
+        assert response == SearchUsersQueryResponse(users=users_primitives)
+        repository.search.assert_called_once()

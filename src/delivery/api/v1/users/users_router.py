@@ -1,11 +1,13 @@
-from http.client import CREATED, OK
+from http.client import CREATED, NOT_FOUND, OK
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from src.application.create_user.create_user_command import CreateUserCommand
 from src.application.create_user.create_user_command_handler import (
     CreateUserCommandHandler,
 )
+from src.application.find_user.find_user_query import FindUserQuery
+from src.application.find_user.find_user_query_handler import FindUserQueryHandler
 from src.application.search_users.search_users_query_handler import SearchUsersQueryHandler
 from src.delivery.api.v1.users.users_requests import UserCreateRequest
 from src.delivery.api.v1.users.users_responses import UserResponse, UsersResponse
@@ -17,6 +19,10 @@ user_repository = InMemoryUserRepository()
 
 def get_create_user_command_handler() -> CreateUserCommandHandler:
     return CreateUserCommandHandler(user_repository)
+
+
+def get_find_user_query_handler() -> FindUserQueryHandler:
+    return FindUserQueryHandler(user_repository)
 
 
 def get_search_users_query_handler() -> SearchUsersQueryHandler:
@@ -31,6 +37,20 @@ def create_user(
 ) -> None:
     command = CreateUserCommand(id=user_id, name=request.name, age=request.age)
     handler.execute(command)
+
+
+@users_router.get("/users/{user_id}", status_code=OK)
+def find_user(user_id: str, handler: FindUserQueryHandler = Depends(get_find_user_query_handler)) -> UserResponse:
+    query = FindUserQuery(id=user_id)
+    response = handler.execute(query)
+    if response is None:
+        raise HTTPException(status_code=NOT_FOUND, detail="User not found")
+
+    return UserResponse(
+        id=response.id,
+        name=response.name,
+        age=response.age,
+    )
 
 
 @users_router.get("/users", status_code=OK)
