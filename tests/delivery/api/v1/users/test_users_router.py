@@ -1,6 +1,6 @@
-import uuid
-from http.client import CREATED, OK
+from http.client import CREATED, NO_CONTENT, OK
 from unittest.mock import Mock
+from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
@@ -9,12 +9,15 @@ from src.application.create_user.create_user_command import CreateUserCommand
 from src.application.create_user.create_user_command_handler import (
     CreateUserCommandHandler,
 )
+from src.application.delete_user.delete_user_command import DeleteUserCommand
+from src.application.delete_user.delete_user_command_handler import DeleteUserCommandHandler
 from src.application.find_user.find_user_query_handler import FindUserQueryHandler
 from src.application.find_user.find_user_query_response import FindUserQueryResponse
 from src.application.search_users.search_users_query_handler import SearchUsersQueryHandler
 from src.application.search_users.search_users_query_response import SearchUsersQueryResponse
 from src.delivery.api.v1.users.users_router import (
     get_create_user_command_handler,
+    get_delete_user_command_handler,
     get_find_user_query_handler,
     get_search_users_query_handler,
 )
@@ -26,7 +29,7 @@ class TestUserRouter:
         self._client = TestClient(app)
 
     def test_create_user(self) -> None:
-        user_id = str(uuid.uuid4())
+        user_id = str(uuid4())
         payload = {"name": "Mike", "age": 27}
         command = CreateUserCommand(id=user_id, name=payload["name"], age=payload["age"])
 
@@ -66,3 +69,16 @@ class TestUserRouter:
 
         assert response.status_code == OK
         assert response.json() == {"users": existing_users_primitives}
+
+    def test_delete_user(self) -> None:
+        user_id = str(uuid4())
+        command = DeleteUserCommand(id=user_id)
+
+        handler = Mock(spec=DeleteUserCommandHandler)
+        app.dependency_overrides[get_delete_user_command_handler] = lambda: handler
+
+        response = self._client.delete(f"/api/v1/users/{user_id}")
+
+        assert response.status_code == NO_CONTENT
+        assert response.content == b""
+        handler.execute.assert_called_once_with(command)

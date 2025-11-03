@@ -22,3 +22,6 @@ class InMemoryUserRepository(UserRepository):
             User.from_primitives(user_primitives["id"], user_primitives["name"], user_primitives["age"])
             for user_primitives in self._storage.values()
         ]
+
+    def delete(self, user_id: UUID) -> None:
+        self._storage.pop(str(user_id), None)

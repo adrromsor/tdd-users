@@ -1,4 +1,4 @@
-from http.client import CREATED, NOT_FOUND, OK
+from http.client import CREATED, NO_CONTENT, NOT_FOUND, OK
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -6,6 +6,8 @@ from src.application.create_user.create_user_command import CreateUserCommand
 from src.application.create_user.create_user_command_handler import (
     CreateUserCommandHandler,
 )
+from src.application.delete_user.delete_user_command import DeleteUserCommand
+from src.application.delete_user.delete_user_command_handler import DeleteUserCommandHandler
 from src.application.find_user.find_user_query import FindUserQuery
 from src.application.find_user.find_user_query_handler import FindUserQueryHandler
 from src.application.search_users.search_users_query_handler import SearchUsersQueryHandler
@@ -27,6 +29,10 @@ def get_find_user_query_handler() -> FindUserQueryHandler:
 
 def get_search_users_query_handler() -> SearchUsersQueryHandler:
     return SearchUsersQueryHandler(user_repository)
+
+
+def get_delete_user_command_handler() -> DeleteUserCommandHandler:
+    return DeleteUserCommandHandler(user_repository)
 
 
 @users_router.put("/users/{user_id}", status_code=CREATED)
@@ -61,3 +67,9 @@ def search_users(handler: SearchUsersQueryHandler = Depends(get_search_users_que
         for user_primitives in response.users
     ]
     return UsersResponse(users=users)
+
+
+@users_router.delete("/users/{user_id}", status_code=NO_CONTENT)
+def delete_user(user_id: str, handler: DeleteUserCommandHandler = Depends(get_delete_user_command_handler)) -> None:
+    command = DeleteUserCommand(id=user_id)
+    handler.execute(command)
