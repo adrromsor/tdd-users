@@ -21,7 +21,7 @@ class TestCreateUserCommandHandler:
         repository = Mock(spec=InMemoryUserRepository)
         handler = CreateUserCommandHandler(repository)
 
-        expected_user = User.create(command.id, command.name, command.age)
+        expected_user = User.from_primitives(command.id, command.name, command.age)
 
         handler.execute(command)
 

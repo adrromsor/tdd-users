@@ -10,10 +10,6 @@ class User:
     age: int
 
     @classmethod
-    def create(cls: type[Self], id: str, name: str, age: int) -> Self:
-        return cls.from_primitives(id, name, age)
-
-    @classmethod
     def from_primitives(cls, id: str, name: str, age: int) -> Self:
         return cls(id=UUID(id), name=name, age=age)
 
