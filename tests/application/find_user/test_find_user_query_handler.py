@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+from uuid import UUID
 
 from src.application.find_user.find_user_query import FindUserQuery
 from src.application.find_user.find_user_query_handler import FindUserQueryHandler
@@ -25,7 +26,7 @@ class TestFindUserQueryHandler:
 
         response: FindUserQueryResponse = handler.execute(query)
 
-        repository.find.assert_called_once_with(user_id=user_primitives["id"])
+        repository.find.assert_called_once_with(user_id=UUID(user_primitives["id"]))
         assert response == FindUserQueryResponse(
             id=user_primitives["id"],
             name=user_primitives["name"],
